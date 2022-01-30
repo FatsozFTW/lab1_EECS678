@@ -1,0 +1,29 @@
+Valgrind_test Report
+
+1. Uninitialized variable
+This error is created because the "uninitialized_variable" in the for loop could not increment
+without knowing the initial value of the variable. The solution to this is
+by simply giving it an integer value to equal to. For example "int uninitialized_variable = 0;"
+
+2. still_reachable = malloc(42)
+The still_reachable variable is still pointed to, but is never freed up. So the solution is to
+free it. Ex. free(still_reachable)
+
+3. possibly_lost = malloc(10);
+possibly_lost is pointed away from where the malloc(10) happened. The solution is to reverse what
+caused to point away and then free it up. 
+
+Ex.
+    possibly_lost -= 4;
+    free(possibly_lost);
+
+4. Indirectly lost and definitely_lost
+From trying to solve this I found out that the definitely_lost in the for loop is inaccessable from
+from outside its scope. So the solution to the indirectly and definitely lost is to free them inside the
+loop. However, to prevent errors you would need to free *definitely_lost first and then free definitely_lost.
+
+Ex.
+    free(*definitely_lost);
+    free(definitely_lost);
+
+With all of this the valgrind summary should have all heap blocks freed and no errors occuring.
